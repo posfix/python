@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {% block content %}
+<form action="" method="post" class="form-horizontal">
+    <fieldset>
+        <!-- Form Name -->
+        <legend>Ödemeleri Listele</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for=""
+                >Başlangıç Tarihi (Gün/Ay/Yıl) (*):</label
+            >
+            <div class="col-md-1">
+                <input
+                    name="startDay"
+                    type="text"
+                    value="19"
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+            <div class="col-md-1">
+                <input
+                    name="startMonth"
+                    type="text"
+                    value="10"
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+            <div class="col-md-1">
+                <input
+                    name="startYear"
+                    type="text"
+                    value="2021"
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for=""
+                >Bitiş Tarihi (Gün/Ay/Yıl) (*):</label
+            >
+            <div class="col-md-1">
+                <input
+                    name="endDay"
+                    type="text"
+                    value="29"
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+            <div class="col-md-1">
+                <input
+                    name="endMonth"
+                    type="text"
+                    value="10"
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+            <div class="col-md-1">
+                <input
+                    name="endYear"
+                    type="text"
+                    value="2021"
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for=""></label>
+            <div class="col-md-4">
+                <button type="submit" id="" name="" class="btn btn-success">
+                    Ödemeleri Listele
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<br />
+<pre>
+{% if message %}
+{{ message }}
+{% endif %}
+</pre>
+{% endblock %}

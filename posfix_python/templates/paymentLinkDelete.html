@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block content %}
+<form action="" method="post" class="form-horizontal">
+    <fieldset>
+        <!-- Form Name -->
+        <legend>Ödeme Linki Sil</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="linkId"
+                >Link Id (**):</label
+            >
+            <div class="col-md-4">
+                <input
+                    name="linkId"
+                    type="text"
+                    value=""
+                    class="form-control input-md"
+                    required
+                />
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for=""></label>
+            <div class="col-md-4">
+                <button type="submit" id="" name="" class="btn btn-success">
+                    Ödeme Linkini Sil
+                </button>
+            </div>
+        </div>
+    </fieldset>
+    <p>** Ödeme linki oluşturduğunuzda dönen "linkPaymentId" parametresidir.</p>
+</form>
+
+<br />
+<pre>
+{% if message %}
+{{ message }}
+{% endif %}
+</pre>
+{% endblock %}
