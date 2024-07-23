@@ -24,6 +24,7 @@ urlpatterns = [
                   re_path(r'^$', threedPaymentRequest, name='threedPaymentRequest'),
                   re_path(r'^preAuth/', preAuthRequest, name='preAuth'),
                   re_path(r'^nonThreeDPayment/', nonThreeDPaymentRequest, name='nonThreeDPayment'),
+                  re_path(r'^postAuth/', postAuthRequest, name='postAuth'),
                   re_path(r'^paymentInquiry/', paymentInquiryRequest, name='paymentInquiry'),
                   re_path(r'^paymentInquiryWithTime/', paymentInquiryWithTimeRequest,
                           name='paymentInquiryWithTime'),
