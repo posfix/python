@@ -1,11 +1,12 @@
 # coding=utf-8
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 from main.posfix_lib.configs import Configs
 from main.posfix_lib.Helper import Helper
 from main.posfix_lib.BankCardDeleteRequest import BankCardDeleteRequest
 from main.posfix_lib.BankCardInquiryRequest import BankCardInquiryRequest
 from main.posfix_lib.BinNumberRequest import BinNumberRequest
+from main.posfix_lib.BinNumberV4Request import BinNumberV4Request
 from main.posfix_lib.BankCardCreateRequest import BankCardCreateRequest
 from main.posfix_lib.PaymentInquiryRequest import PaymentInquiryRequest
 from main.posfix_lib.PaymentInquiryWithTimeRequest import PaymentInquiryWithTimeRequest
@@ -23,13 +24,13 @@ import json
 config = Configs(
     # "Public Magaza Anahtarı
     # size mağaza başvurunuz sonucunda gönderilen public key (açık anahtar) bilgisini kullanınız.",
-    '',
+    '7PCUPPMTD65YX2A',
     # "Private Magaza Anahtarı
     # size mağaza başvurunuz sonucunda gönderilen privaye key (gizli anahtar) bilgisini kullanınız.",
-    '',
+    'ZUG4OCV5L81IC5BCX5S8BYBD9',
     # PosFix web servisleri API url'lerinin başlangıç bilgisidir.
     # Restful web servis isteklerini takip eden kodlar halinde bulacaksınız.
-    'https://api.posfix.com.tr/',  # BaseUrl
+    'http://posfix-api-uat.pozitiftech.io/',  # BaseUrl
     # Test -> T, entegrasyon testlerinin sırasında "T" modunu,
     # canlı sisteme entegre olarak ödeme almaya başlamak için ise Prod -> "P" modunu kullanınız.
     'T',  # Mode
@@ -41,6 +42,7 @@ config = Configs(
     '',  # HashString
     '',  # TransactionDate
 )
+
 
 # Ana Sayfamızda Ön Tanımlı Olarak 3D Ödeme Kısmı Gelmekte
 
@@ -71,7 +73,8 @@ def threedPaymentRequest(request):
 
         # 3D formunun başlatılması için istek çağrısının yapıldığı kısımdır.
         message = req.execute(req, config)
-    return render_to_response('index.html', {'message': message})
+    return render(None, 'index.html', {'message': message})
+
 
 # Non-3D Ödeme Yaptığımız Kısım
 
@@ -150,7 +153,8 @@ def nonThreeDPaymentRequest(request):
         message = Helper.formatXML(
             non3DPaymentRequest.execute(non3DPaymentRequest, config))
 
-    return render_to_response('nonThreeDPayment.html', {'message': message})
+    return render(None, 'nonThreeDPayment.html', {'message': message})
+
 
 # Ödeme Sorguladığımız Kısım
 
@@ -164,7 +168,8 @@ def paymentInquiryRequest(request):
         # ödeme sorgulama servisi api çağrısının yapıldığı kısımdır.
         message = Helper.formatXML(req.execute(req, config))
 
-    return render_to_response('paymentInquiry.html', {'message': message})
+    return render(None, 'paymentInquiry.html', {'message': message})
+
 
 # Ödemeleri Zamana Göre Sorguladığımız Kısım
 
@@ -186,7 +191,8 @@ def paymentInquiryWithTimeRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentInquiryWithTime.html', {'message': message})
+    return render(None, 'paymentInquiryWithTime.html', {'message': message})
+
 
 # Bin İsteği Yaptığımız Kısım
 
@@ -204,7 +210,27 @@ def binRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('bininqury.html', {'message': message})
+    return render(None, 'bininqury.html', {'message': message})
+
+
+# Bin İsteği Yaptığımız Kısım
+
+
+def binV4Request(request):
+    message = ""
+    if request.POST:
+        req = BinNumberV4Request()
+        req.binNumber = request.POST.get('binNumber')
+        req.amount = request.POST.get('amount')
+        req.threeD = request.POST.get('threeD')
+
+        # Bin istegi icin yapılan API cagrisini temsil etmektedir
+        response = req.execute(req, config)
+        message = json.dumps(json.loads(response),
+                             indent=4, ensure_ascii=False)
+
+    return render(None, 'bininquryv4.html', {'message': message})
+
 
 # Cüzdana Kart Eklediğimiz Kısım
 
@@ -226,7 +252,8 @@ def addCartToWallet(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('addCartToWallet.html', {'message': message})
+    return render(None, 'addCartToWallet.html', {'message': message})
+
 
 # Cüzdandaki Kartları Listelediğimiz Kısım
 
@@ -244,7 +271,8 @@ def getCardFromWallet(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('getCardFromWallet.html', {'message': message})
+    return render(None, 'getCardFromWallet.html', {'message': message})
+
 
 # Cüzdandan Kart Sildiğimiz Kısım
 
@@ -262,7 +290,8 @@ def deleteCardFromWallet(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('deleteCardFromWallet.html', {'message': message})
+    return render(None, 'deleteCardFromWallet.html', {'message': message})
+
 
 # Cüzdandaki Kartla Tek Tıkla Ödeme Yaptığımız Örnek
 
@@ -336,7 +365,8 @@ def nonThreeDPaymentWithWallet(request):
         # Cüzdandaki kart ile ödeme yapma API çağrısının yapıldığı kısımdır.
         message = Helper.formatXML(req.execute(req, config))
 
-    return render_to_response('nonThreeDPaymentWithWallet.html', {'message': message})
+    return render(None, 'nonThreeDPaymentWithWallet.html', {'message': message})
+
 
 # Ödeme Linki Oluşturduğumuz Kısım
 
@@ -366,7 +396,8 @@ def paymentLinkCreateRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentLinkCreate.html', {'message': message})
+    return render(None, 'paymentLinkCreate.html', {'message': message})
+
 
 # Ödeme Linki Sorguladığımız Kısım
 
@@ -399,7 +430,8 @@ def paymentLinkInquiryRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentLinkInquiry.html', {'message': message})
+    return render(None, 'paymentLinkInquiry.html', {'message': message})
+
 
 # Ödeme Linki Sildiğimiz Kısım
 
@@ -416,7 +448,8 @@ def paymentLinkDeleteRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentLinkDelete.html', {'message': message})
+    return render(None, 'paymentLinkDelete.html', {'message': message})
+
 
 # İade Sorgulaması Yaptığımız Kısım
 
@@ -434,7 +467,8 @@ def paymentRefundInquiryRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentRefundInquiry.html', {'message': message})
+    return render(None, 'paymentRefundInquiry.html', {'message': message})
+
 
 # İade Yaptığımız Kısım
 
@@ -453,4 +487,4 @@ def paymentRefundRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentRefund.html', {'message': message})
+    return render(None, 'paymentRefund.html', {'message': message})
