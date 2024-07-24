@@ -43,5 +43,7 @@ urlpatterns = [
                   re_path(r'^binV4Request/', binV4Request, name='binV4Request'),
                   re_path(r'^nonThreeDPaymentWithWallet/', nonThreeDPaymentWithWallet,
                           name='nonThreeDPaymentWithWallet'),
+                  re_path(r'^checkoutFormCreate/', checkoutFormCreateRequest,
+                          name='checkoutFormCreate'),
                   re_path(r'^admin/', admin.site.urls),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
