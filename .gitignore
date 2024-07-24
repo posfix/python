@@ -105,3 +105,5 @@ ENV/
 /.pydevproject
 /db.sqlite3
 /.settings
+/node_modules
+.idea
