@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from main.posfix_lib.configs import Configs
@@ -17,7 +18,9 @@ from main.posfix_lib.PaymentRefundInquiryRequest import PaymentRefundInquiryRequ
 from main.posfix_lib.PaymentRefundRequest import PaymentRefundRequest
 from main.posfix_lib.ThreedPaymentRequest import ThreedPaymentRequest
 from main.posfix_lib.NonThreeDPaymentRequest import NonThreeDPaymentRequest
-
+from main.posfix_lib.PreAuthRequest import PreAuthRequest
+from main.posfix_lib.PostAuthRequest import PostAuthRequest
+from main.posfix_lib.CheckoutFormCreateRequest import CheckoutFormCreateRequest
 from random import randint
 import json
 
@@ -74,6 +77,84 @@ def threedPaymentRequest(request):
         # 3D formunun başlatılması için istek çağrısının yapıldığı kısımdır.
         message = req.execute(req, config)
     return render(None, 'index.html', {'message': message})
+
+
+def preAuthRequest(request):
+    message = ""
+    if request.POST:
+        preAuthRequest = PreAuthRequest()
+        preAuthRequest.Echo = "Echo"
+        preAuthRequest.Mode = config.Mode
+        preAuthRequest.ThreeD = "false"
+        preAuthRequest.Version = "1.0"
+        preAuthRequest.OrderId = str(randint(1, 10000))
+        preAuthRequest.Amount = request.POST.get('amount')
+        preAuthRequest.CardOwnerName = request.POST.get('nameSurname')
+        preAuthRequest.CardNumber = request.POST.get('cardNumber')
+        preAuthRequest.CardExpireMonth = request.POST.get('month')
+        preAuthRequest.CardExpireYear = request.POST.get('year')
+        preAuthRequest.Installment = request.POST.get('installment')
+        preAuthRequest.Cvc = request.POST.get('cvc')
+        preAuthRequest.VendorId = ""
+        preAuthRequest.UserId = ""
+        preAuthRequest.CardId = ""
+        preAuthRequest.ThreeDSecureCode = ""
+
+        preAuthRequest.Purchaser = preAuthRequest.PurchaserClass()
+        preAuthRequest.Purchaser.name = "Ahmet"
+        preAuthRequest.Purchaser.surname = "Veli"
+        preAuthRequest.Purchaser.birthDate = "1986-07-11"
+        preAuthRequest.Purchaser.email = "mura@Veli.com"
+        preAuthRequest.Purchaser.gsmPhone = "5881231212"
+        preAuthRequest.Purchaser.tcCertificate = "58812312547"
+        preAuthRequest.Purchaser.clientIp = "127.0.0.1"
+
+        # Fatura Bilgileri
+        preAuthRequest.Purchaser.invoiceAddress = preAuthRequest.PurchaserAddress()
+        preAuthRequest.Purchaser.invoiceAddress.name = "Ahmet"
+        preAuthRequest.Purchaser.invoiceAddress.surname = "Veli"
+        preAuthRequest.Purchaser.invoiceAddress.address = "Mevlut Pehlivan Mah. PosFix Plaza Sisli"
+        preAuthRequest.Purchaser.invoiceAddress.zipCode = "34782"
+        preAuthRequest.Purchaser.invoiceAddress.cityCode = "34"
+        preAuthRequest.Purchaser.invoiceAddress.tcCertificate = "1234567890"
+        preAuthRequest.Purchaser.invoiceAddress.country = "TR"
+        preAuthRequest.Purchaser.invoiceAddress.taxNumber = "123456"
+        preAuthRequest.Purchaser.invoiceAddress.taxOffice = "Kozyatagi"
+        preAuthRequest.Purchaser.invoiceAddress.companyName = "PosFix"
+        preAuthRequest.Purchaser.invoiceAddress.phoneNumber = "2122222222"
+
+        # Kargo Bilgileri
+        preAuthRequest.Purchaser.shippingAddress = preAuthRequest.PurchaserAddress()
+        preAuthRequest.Purchaser.shippingAddress.name = "Ahmet"
+        preAuthRequest.Purchaser.shippingAddress.surname = "Veli"
+        preAuthRequest.Purchaser.shippingAddress.address = "Mevlut Pehlivan Mah. PosFix Plaza Sisli"
+        preAuthRequest.Purchaser.shippingAddress.zipCode = "34782"
+        preAuthRequest.Purchaser.shippingAddress.cityCode = "34"
+        preAuthRequest.Purchaser.shippingAddress.tcCertificate = "1234567890"
+        preAuthRequest.Purchaser.shippingAddress.country = "TR"
+        preAuthRequest.Purchaser.shippingAddress.phoneNumber = "2122222222"
+
+        # Ürün Bilgileri
+        preAuthRequest.Products = []
+        product1 = preAuthRequest.Product()
+        product1.title = "Telefon"
+        product1.code = "TLF0001"
+        product1.price = "5000"
+        product1.quantity = "1"
+        preAuthRequest.Products.append(product1)
+
+        product2 = preAuthRequest.Product()
+        product2.title = "Bilgisayar"
+        product2.code = "BLG0001"
+        product2.price = "5000"
+        product2.quantity = "1"
+        preAuthRequest.Products.append(product2)
+
+        # API Cagrisi Yapiyoruz
+        response = preAuthRequest.execute(preAuthRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'preAuth.html', {'message': message})
 
 
 # Non-3D Ödeme Yaptığımız Kısım
@@ -154,6 +235,21 @@ def nonThreeDPaymentRequest(request):
             non3DPaymentRequest.execute(non3DPaymentRequest, config))
 
     return render(None, 'nonThreeDPayment.html', {'message': message})
+
+
+def postAuthRequest(request):
+    message = ""
+    if request.POST:
+        postAuthRequest = PostAuthRequest()
+        postAuthRequest.Mode = config.Mode
+        postAuthRequest.OrderId = request.POST.get('orderId')
+        postAuthRequest.Amount = request.POST.get('amount')
+        postAuthRequest.ClientIp = "127.0.0.1"
+        # API Cagrisi Yapiyoruz
+        response = postAuthRequest.execute(postAuthRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'postAuth.html', {'message': message})
 
 
 # Ödeme Sorguladığımız Kısım
@@ -488,3 +584,25 @@ def paymentRefundRequest(request):
                              indent=4, ensure_ascii=False)
 
     return render(None, 'paymentRefund.html', {'message': message})
+
+
+def checkoutFormCreateRequest(request):
+    message = ""
+    if request.method == "POST":
+        checkoutFormCreateRequest = CheckoutFormCreateRequest()
+        checkoutFormCreateRequest.OrderId = str(randint(1, 10000))
+        checkoutFormCreateRequest.Amount = "10000"
+        checkoutFormCreateRequest.ThreeD = "false"
+        checkoutFormCreateRequest.Mode = config.Mode
+        checkoutFormCreateRequest.Purchaser = checkoutFormCreateRequest.PurchaserClass()
+        checkoutFormCreateRequest.Purchaser.name = "Ahmet"
+        checkoutFormCreateRequest.Purchaser.surname = "Veli"
+        checkoutFormCreateRequest.Purchaser.email = "mura@Veli.com"
+        checkoutFormCreateRequest.Version = "1.0"
+        checkoutFormCreateRequest.Echo = "Echo"
+
+        # API Cagrisi Yapiyoruz
+        response = checkoutFormCreateRequest.execute(checkoutFormCreateRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'checkoutFormCreate.html', {'message': message})
