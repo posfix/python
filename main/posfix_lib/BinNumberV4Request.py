@@ -2,11 +2,10 @@
 import json
 
 from main.posfix_lib.Helper import Helper, HttpClient
-from main.posfix_lib.configs import Configs
 
 
 class BinNumberV4Request:
-    # Bin Sorgulama servisleri içerisinde kullanılacak olan bin numarasını temsil eder.
+    # Bin Sorgulama v4 servisleri içerisinde kullanılacak olan bin numarasını temsil eder.
     binNumber = ""
     amount = ""
     threeD = ""
@@ -18,10 +17,10 @@ class BinNumberV4Request:
         helper = Helper()
         configs.TransactionDate = helper.GetTransactionDateString()
 
-        configs.HashString = configs.PrivateKey+req.binNumber+configs.TransactionDate
+        configs.HashString = configs.PrivateKey + req.binNumber + configs.TransactionDate
 
         json_data = json.dumps(req.__dict__)  # Json Serilestirme
 
-        result = HttpClient.post(configs.BaseUrl+"/rest/payment/bin/lookup/v4",
+        result = HttpClient.post(configs.BaseUrl + "/rest/payment/bin/lookup/v4",
                                  helper.GetHttpHeaders(configs, helper.Application_json), json_data)
         return result
