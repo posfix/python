@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.urls import include, re_path
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
@@ -21,24 +21,25 @@ from django.conf.urls.static import static
 from main.views import *
 
 urlpatterns = [
-    url(r'^$', threedPaymentRequest, name='threedPaymentRequest'),
-    url(r'^nonThreeDPayment/', nonThreeDPaymentRequest, name='nonThreeDPayment'),
-    url(r'^paymentInquiry/', paymentInquiryRequest, name='paymentInquiry'),
-    url(r'^paymentInquiryWithTime/', paymentInquiryWithTimeRequest,
-        name='paymentInquiryWithTime'),
-    url(r'^paymentLinkDelete/', paymentLinkDeleteRequest, name='paymentLinkDelete'),
-    url(r'^paymentLinkCreate/', paymentLinkCreateRequest, name='paymentLinkCreate'),
-    url(r'^paymentLinkInquiry/', paymentLinkInquiryRequest,
-        name='paymentLinkInquiry'),
-    url(r'^paymentRefundInquiry/', paymentRefundInquiryRequest,
-        name='paymentRefundInquiry'),
-    url(r'^paymentRefund/', paymentRefundRequest, name='paymentRefund'),
-    url(r'^getCardFromWallet/', getCardFromWallet, name='getCardFromWallet'),
-    url(r'^addCartToWallet/', addCartToWallet, name='addCartToWallet'),
-    url(r'^deleteCardFromWallet/', deleteCardFromWallet,
-        name='deleteCardFromWallet'),
-    url(r'^binRequest/', binRequest, name='binRequest'),
-    url(r'^nonThreeDPaymentWithWallet/', nonThreeDPaymentWithWallet,
-        name='nonThreeDPaymentWithWallet'),
-    url(r'^admin/', admin.site.urls),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+                  re_path(r'^$', threedPaymentRequest, name='threedPaymentRequest'),
+                  re_path(r'^nonThreeDPayment/', nonThreeDPaymentRequest, name='nonThreeDPayment'),
+                  re_path(r'^paymentInquiry/', paymentInquiryRequest, name='paymentInquiry'),
+                  re_path(r'^paymentInquiryWithTime/', paymentInquiryWithTimeRequest,
+                      name='paymentInquiryWithTime'),
+                  re_path(r'^paymentLinkDelete/', paymentLinkDeleteRequest, name='paymentLinkDelete'),
+                  re_path(r'^paymentLinkCreate/', paymentLinkCreateRequest, name='paymentLinkCreate'),
+                  re_path(r'^paymentLinkInquiry/', paymentLinkInquiryRequest,
+                      name='paymentLinkInquiry'),
+                  re_path(r'^paymentRefundInquiry/', paymentRefundInquiryRequest,
+                      name='paymentRefundInquiry'),
+                  re_path(r'^paymentRefund/', paymentRefundRequest, name='paymentRefund'),
+                  re_path(r'^getCardFromWallet/', getCardFromWallet, name='getCardFromWallet'),
+                  re_path(r'^addCartToWallet/', addCartToWallet, name='addCartToWallet'),
+                  re_path(r'^deleteCardFromWallet/', deleteCardFromWallet,
+                      name='deleteCardFromWallet'),
+                  re_path(r'^binRequest/', binRequest, name='binRequest'),
+                  re_path(r'^binV4Request/', binV4Request, name='binV4Request'),
+                  re_path(r'^nonThreeDPaymentWithWallet/', nonThreeDPaymentWithWallet,
+                      name='nonThreeDPaymentWithWallet'),
+                  re_path(r'^admin/', admin.site.urls),
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
