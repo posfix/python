@@ -19,6 +19,7 @@ from main.posfix_lib.PaymentRefundRequest import PaymentRefundRequest
 from main.posfix_lib.ThreedPaymentRequest import ThreedPaymentRequest
 from main.posfix_lib.NonThreeDPaymentRequest import NonThreeDPaymentRequest
 from main.posfix_lib.PreAuthRequest import PreAuthRequest
+from main.posfix_lib.PostAuthRequest import PostAuthRequest
 from random import randint
 import json
 
@@ -150,7 +151,6 @@ def preAuthRequest(request):
 
         # API Cagrisi Yapiyoruz
         response = preAuthRequest.execute(preAuthRequest, config)
-        print("RESPONSE:",response)
         message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
 
     return render(None, 'preAuth.html', {'message': message})
@@ -234,6 +234,21 @@ def nonThreeDPaymentRequest(request):
             non3DPaymentRequest.execute(non3DPaymentRequest, config))
 
     return render(None, 'nonThreeDPayment.html', {'message': message})
+
+
+def postAuthRequest(request):
+    message = ""
+    if request.POST:
+        postAuthRequest = PostAuthRequest()
+        postAuthRequest.Mode = config.Mode
+        postAuthRequest.OrderId = request.POST.get('orderId')
+        postAuthRequest.Amount = request.POST.get('amount')
+        postAuthRequest.ClientIp = "127.0.0.1"
+        # API Cagrisi Yapiyoruz
+        response = postAuthRequest.execute(postAuthRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'postAuth.html', {'message': message})
 
 
 # Ödeme Sorguladığımız Kısım
