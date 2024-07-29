@@ -1,8 +1,6 @@
 # coding=utf-8
 import json
 from main.posfix_lib.Helper import Helper, HttpClient
-from xml.etree.ElementTree import Element, SubElement, tostring
-
 
 class PreAuthRequest(object):
     Echo = ""
@@ -24,7 +22,7 @@ class PreAuthRequest(object):
     Purchaser = ""
     Version = ""
 
-    # 3D Secure Olmadan Odeme Servis cagsirini temsil eder.
+    # Ön Otorizasyon Açma Servis cagrisini temsil eder.
     def execute(self, req, configs):
         helper = Helper()
         configs.TransactionDate = helper.GetTransactionDateString()
@@ -79,8 +77,6 @@ class PreAuthRequest(object):
 
         return result
 
-    # Bu sınıf cüzdana kart ekleme servisi isteği sonucunda ve cüzdandaki kartları getir
-    # isteği sonucunda bize döndürülen alanları temsil eder.
     class BankCard:
         cardId = ""
         maskNumber = ""
@@ -98,8 +94,6 @@ class PreAuthRequest(object):
         def __init__(self):
             pass
 
-    # Bu sınıf 3D secure olmadan ödeme kısmında ürün bilgisinin kullanılacağı yerde
-    # ve 3D secure ile ödemenin 2. adamında ürün bilgisinin istendiği yerde kullanılır.
     class PurchaserAddress:
         name = ""
         surname = ""
@@ -116,16 +110,11 @@ class PreAuthRequest(object):
         def __init__(self):
             pass
 
-    # Bu sınıf 3D secure olmadan ödeme kısmında ürün bilgisinin kullanılacağı yerde
-    # ve 3D secure ile ödemenin 2. adamında ürün bilgisinin istendiği yerde kullanılır.
     class Product:
         code = ""
         title = ""
         quantity = ""
         price = ""
-
-    # Bu sınıf 3D secure olmadan ödeme kısmında ürün bilgisinin kullanılacağı yerde
-    # ve 3D secure ile ödemenin 2. adamında ürün bilgisinin istendiği yerde kullanılır.
 
     class PurchaserClass:
         name = ""
@@ -137,8 +126,6 @@ class PreAuthRequest(object):
         clientIp = ""
         invoiceAddress = ""
         shippingAddress = ""
-
-    # Bu sınıf 3D Secure ile Ödeme işlemlerinin 1. ve 2. adımında kullanılan parametreleri temsil eder.
 
     class PosFixAuth:
         threeD = ""

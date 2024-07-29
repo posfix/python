@@ -10,13 +10,13 @@ class PostAuthRequest(object):
     ClientIp = ""
     Mode = ""
 
-    # 3D Secure Olmadan Odeme Servis cagsirini temsil eder.
+    # Ön Otorizasyon Kapama Servis cagrisini temsil eder.
     def execute(self, req, configs):
         helper = Helper()
         configs.TransactionDate = helper.GetTransactionDateString()
 
         configs.HashString = configs.PrivateKey + req.OrderId + req.Amount + req.Mode + \
-                             req.ClientIp+ configs.TransactionDate
+                             req.ClientIp + configs.TransactionDate
 
         json_data = json.dumps({
             'orderId': req.OrderId,

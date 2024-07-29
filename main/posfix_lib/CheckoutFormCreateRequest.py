@@ -1,8 +1,6 @@
 # coding=utf-8
 import json
 from main.posfix_lib.Helper import Helper, HttpClient
-from xml.etree.ElementTree import Element, SubElement, tostring
-
 
 class CheckoutFormCreateRequest(object):
     ThreeD = ""
@@ -16,7 +14,7 @@ class CheckoutFormCreateRequest(object):
     CustField1 = ""
     Echo = ""
 
-    # 3D Secure Olmadan Odeme Servis cagsirini temsil eder.
+    #  Checkout Form Oluşturma Servis cagrisini temsil eder.
     def execute(self, req, configs):
         helper = Helper()
         configs.TransactionDate = helper.GetTransactionDateString()
