@@ -89,7 +89,7 @@ def nonThreeDPaymentRequest(request):
         non3DPaymentRequest.Mode = config.Mode
         non3DPaymentRequest.ThreeD = "false"
         non3DPaymentRequest.OrderId = str(randint(1, 10000))
-        non3DPaymentRequest.Amount = "10000"
+        non3DPaymentRequest.Amount = "100"
         non3DPaymentRequest.CardOwnerName = "Ahmet Veli"
         non3DPaymentRequest.CardNumber = "5456165456165454"
         non3DPaymentRequest.CardExpireMonth = "12"
