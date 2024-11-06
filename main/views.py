@@ -27,13 +27,13 @@ import json
 config = Configs(
     # "Public Magaza Anahtarı
     # size mağaza başvurunuz sonucunda gönderilen public key (açık anahtar) bilgisini kullanınız.",
-    '7PCUPPMTD65YX2A',
+    '',
     # "Private Magaza Anahtarı
     # size mağaza başvurunuz sonucunda gönderilen privaye key (gizli anahtar) bilgisini kullanınız.",
-    'ZUG4OCV5L81IC5BCX5S8BYBD9',
+    '',
     # PosFix web servisleri API url'lerinin başlangıç bilgisidir.
     # Restful web servis isteklerini takip eden kodlar halinde bulacaksınız.
-    'http://posfix-api-uat.pozitiftech.io/',  # BaseUrl
+    'https://api.posfix.com.tr/',  # BaseUrl
     # Test -> T, entegrasyon testlerinin sırasında "T" modunu,
     # canlı sisteme entegre olarak ödeme almaya başlamak için ise Prod -> "P" modunu kullanınız.
     'T',  # Mode
