@@ -25,7 +25,7 @@ class CheckoutFormCreateRequest(object):
         json_data = json.dumps({
             'orderId': req.OrderId,
             'amount': req.Amount,
-            'callbackUrl': "https://apitest.posfix.com.tr/rest/payment/threed/test/result",
+            'callbackUrl': "https://api.posfix.com.tr/rest/payment/threed/test/result",
             'threed': req.ThreeD,
             'allowedInstallments': list({"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}),  # kontrol et
             'mode': req.Mode,

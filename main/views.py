@@ -71,8 +71,8 @@ def threedPaymentRequest(request):
         req.PurchaserName = "Ahmet"
         req.PurchaserSurname = "Veli"
         req.PurchaserEmail = "ahmet@veli.com"
-        req.SuccessUrl = "https://apitest.posfix.com.tr/rest/payment/threed/test/result"
-        req.FailUrl = "https://apitest.posfix.com.tr/rest/payment/threed/test/result"
+        req.SuccessUrl = "https://api.posfix.com.tr/rest/payment/threed/test/result"
+        req.FailUrl = "https://api.posfix.com.tr/rest/payment/threed/test/result"
 
         # 3D formunun başlatılması için istek çağrısının yapıldığı kısımdır.
         message = req.execute(req, config)
@@ -399,7 +399,7 @@ def nonThreeDPaymentWithWallet(request):
         req.OrderId = str(randint(1, 10000))
         req.Echo = "Echo"
         req.Mode = config.Mode
-        req.Amount = "10000"
+        req.Amount = "100"
         req.CardOwnerName = ""
         req.CardNumber = ""
         req.CardExpireMonth = ""
@@ -591,7 +591,7 @@ def checkoutFormCreateRequest(request):
     if request.method == "POST":
         checkoutFormCreateRequest = CheckoutFormCreateRequest()
         checkoutFormCreateRequest.OrderId = str(randint(1, 10000))
-        checkoutFormCreateRequest.Amount = "10000"
+        checkoutFormCreateRequest.Amount = "100"
         checkoutFormCreateRequest.ThreeD = "false"
         checkoutFormCreateRequest.Mode = config.Mode
         checkoutFormCreateRequest.Purchaser = checkoutFormCreateRequest.PurchaserClass()
