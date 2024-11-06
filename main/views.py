@@ -20,6 +20,7 @@ from main.posfix_lib.ThreedPaymentRequest import ThreedPaymentRequest
 from main.posfix_lib.NonThreeDPaymentRequest import NonThreeDPaymentRequest
 from main.posfix_lib.PreAuthRequest import PreAuthRequest
 from main.posfix_lib.PostAuthRequest import PostAuthRequest
+from main.posfix_lib.CheckoutFormCreateRequest import CheckoutFormCreateRequest
 from random import randint
 import json
 
@@ -583,3 +584,25 @@ def paymentRefundRequest(request):
                              indent=4, ensure_ascii=False)
 
     return render(None, 'paymentRefund.html', {'message': message})
+
+
+def checkoutFormCreateRequest(request):
+    message = ""
+    if request.method == "POST":
+        checkoutFormCreateRequest = CheckoutFormCreateRequest()
+        checkoutFormCreateRequest.OrderId = str(randint(1, 10000))
+        checkoutFormCreateRequest.Amount = "10000"
+        checkoutFormCreateRequest.ThreeD = "false"
+        checkoutFormCreateRequest.Mode = config.Mode
+        checkoutFormCreateRequest.Purchaser = checkoutFormCreateRequest.PurchaserClass()
+        checkoutFormCreateRequest.Purchaser.name = "Ahmet"
+        checkoutFormCreateRequest.Purchaser.surname = "Veli"
+        checkoutFormCreateRequest.Purchaser.email = "mura@Veli.com"
+        checkoutFormCreateRequest.Version = "1.0"
+        checkoutFormCreateRequest.Echo = "Echo"
+
+        # API Cagrisi Yapiyoruz
+        response = checkoutFormCreateRequest.execute(checkoutFormCreateRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'checkoutFormCreate.html', {'message': message})
