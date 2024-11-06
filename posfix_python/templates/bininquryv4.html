@@ -2,35 +2,50 @@
 <form action="" method="post" class="form-horizontal">
     <fieldset>
         <!-- Form Name -->
-        <legend>İade Sorgula</legend>
+        <legend>Bin Sorgulama V4</legend>
 
         <!-- Text input-->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="orderId"
-                >Sipariş Numarası (*):</label
+            <label class="col-md-4 control-label" for="binNumber"
+                >Bin Numarası (*):</label
             >
             <div class="col-md-4">
                 <input
-                    name="orderId"
+                    id="binNumber"
+                    name="binNumber"
                     type="text"
-                    value="1550972096"
+                    placeholder=""
+                    value="466280"
                     class="form-control input-md"
-                    required
+                    required=""
                 />
             </div>
         </div>
+
         <div class="form-group">
-            <label class="col-md-4 control-label" for="amount"
-                >Tutar (**)</label
-            >
+            <label class="col-md-4 control-label" for="amount">Tutar (**):</label>
             <div class="col-md-4">
                 <input
+                    id="amount"
                     name="amount"
                     type="text"
+                    placeholder=""
                     value="100"
                     class="form-control input-md"
-                    required
+                    required=""
                 />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="threeD"
+                >3D / Non-Secure (*):</label
+            >
+            <div class="col-md-4">
+                <select class="form-control input-md" name="threeD">
+                    <option value="true">3D</option>
+                    <option value="false">Non-Secure</option>
+                </select>
             </div>
         </div>
 
@@ -39,15 +54,11 @@
             <label class="col-md-4 control-label" for=""></label>
             <div class="col-md-4">
                 <button type="submit" id="" name="" class="btn btn-success">
-                    Iade Sorgula
+                    Sorgula
                 </button>
             </div>
         </div>
     </fieldset>
-    <p>
-        ** Sipariş tutarı kuruş ayracı olmadan gönderilmelidir. Örneğin; 1 TL
-        100, 12 1200, 130 13000, 1.05 105, 1.2 120 olarak gönderilmelidir.
-    </p>
 </form>
 
 <br />

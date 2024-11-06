@@ -1,11 +1,13 @@
 # coding=utf-8
-from django.shortcuts import render_to_response
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from main.posfix_lib.configs import Configs
 from main.posfix_lib.Helper import Helper
 from main.posfix_lib.BankCardDeleteRequest import BankCardDeleteRequest
 from main.posfix_lib.BankCardInquiryRequest import BankCardInquiryRequest
 from main.posfix_lib.BinNumberRequest import BinNumberRequest
+from main.posfix_lib.BinNumberV4Request import BinNumberV4Request
 from main.posfix_lib.BankCardCreateRequest import BankCardCreateRequest
 from main.posfix_lib.PaymentInquiryRequest import PaymentInquiryRequest
 from main.posfix_lib.PaymentInquiryWithTimeRequest import PaymentInquiryWithTimeRequest
@@ -16,7 +18,9 @@ from main.posfix_lib.PaymentRefundInquiryRequest import PaymentRefundInquiryRequ
 from main.posfix_lib.PaymentRefundRequest import PaymentRefundRequest
 from main.posfix_lib.ThreedPaymentRequest import ThreedPaymentRequest
 from main.posfix_lib.NonThreeDPaymentRequest import NonThreeDPaymentRequest
-
+from main.posfix_lib.PreAuthRequest import PreAuthRequest
+from main.posfix_lib.PostAuthRequest import PostAuthRequest
+from main.posfix_lib.CheckoutFormCreateRequest import CheckoutFormCreateRequest
 from random import randint
 import json
 
@@ -42,6 +46,7 @@ config = Configs(
     '',  # TransactionDate
 )
 
+
 # Ana Sayfamızda Ön Tanımlı Olarak 3D Ödeme Kısmı Gelmekte
 
 
@@ -66,12 +71,91 @@ def threedPaymentRequest(request):
         req.PurchaserName = "Ahmet"
         req.PurchaserSurname = "Veli"
         req.PurchaserEmail = "ahmet@veli.com"
-        req.SuccessUrl = "https://apitest.posfix.com.tr/rest/payment/threed/test/result"
-        req.FailUrl = "https://apitest.posfix.com.tr/rest/payment/threed/test/result"
+        req.SuccessUrl = "https://api.posfix.com.tr/rest/payment/threed/test/result"
+        req.FailUrl = "https://api.posfix.com.tr/rest/payment/threed/test/result"
 
         # 3D formunun başlatılması için istek çağrısının yapıldığı kısımdır.
         message = req.execute(req, config)
-    return render_to_response('index.html', {'message': message})
+    return render(None, 'index.html', {'message': message})
+
+
+def preAuthRequest(request):
+    message = ""
+    if request.POST:
+        preAuthRequest = PreAuthRequest()
+        preAuthRequest.Echo = "Echo"
+        preAuthRequest.Mode = config.Mode
+        preAuthRequest.ThreeD = "false"
+        preAuthRequest.Version = "1.0"
+        preAuthRequest.OrderId = str(randint(1, 10000))
+        preAuthRequest.Amount = request.POST.get('amount')
+        preAuthRequest.CardOwnerName = request.POST.get('nameSurname')
+        preAuthRequest.CardNumber = request.POST.get('cardNumber')
+        preAuthRequest.CardExpireMonth = request.POST.get('month')
+        preAuthRequest.CardExpireYear = request.POST.get('year')
+        preAuthRequest.Installment = request.POST.get('installment')
+        preAuthRequest.Cvc = request.POST.get('cvc')
+        preAuthRequest.VendorId = ""
+        preAuthRequest.UserId = ""
+        preAuthRequest.CardId = ""
+        preAuthRequest.ThreeDSecureCode = ""
+
+        preAuthRequest.Purchaser = preAuthRequest.PurchaserClass()
+        preAuthRequest.Purchaser.name = "Ahmet"
+        preAuthRequest.Purchaser.surname = "Veli"
+        preAuthRequest.Purchaser.birthDate = "1986-07-11"
+        preAuthRequest.Purchaser.email = "mura@Veli.com"
+        preAuthRequest.Purchaser.gsmPhone = "5881231212"
+        preAuthRequest.Purchaser.tcCertificate = "58812312547"
+        preAuthRequest.Purchaser.clientIp = "127.0.0.1"
+
+        # Fatura Bilgileri
+        preAuthRequest.Purchaser.invoiceAddress = preAuthRequest.PurchaserAddress()
+        preAuthRequest.Purchaser.invoiceAddress.name = "Ahmet"
+        preAuthRequest.Purchaser.invoiceAddress.surname = "Veli"
+        preAuthRequest.Purchaser.invoiceAddress.address = "Mevlut Pehlivan Mah. PosFix Plaza Sisli"
+        preAuthRequest.Purchaser.invoiceAddress.zipCode = "34782"
+        preAuthRequest.Purchaser.invoiceAddress.cityCode = "34"
+        preAuthRequest.Purchaser.invoiceAddress.tcCertificate = "1234567890"
+        preAuthRequest.Purchaser.invoiceAddress.country = "TR"
+        preAuthRequest.Purchaser.invoiceAddress.taxNumber = "123456"
+        preAuthRequest.Purchaser.invoiceAddress.taxOffice = "Kozyatagi"
+        preAuthRequest.Purchaser.invoiceAddress.companyName = "PosFix"
+        preAuthRequest.Purchaser.invoiceAddress.phoneNumber = "2122222222"
+
+        # Kargo Bilgileri
+        preAuthRequest.Purchaser.shippingAddress = preAuthRequest.PurchaserAddress()
+        preAuthRequest.Purchaser.shippingAddress.name = "Ahmet"
+        preAuthRequest.Purchaser.shippingAddress.surname = "Veli"
+        preAuthRequest.Purchaser.shippingAddress.address = "Mevlut Pehlivan Mah. PosFix Plaza Sisli"
+        preAuthRequest.Purchaser.shippingAddress.zipCode = "34782"
+        preAuthRequest.Purchaser.shippingAddress.cityCode = "34"
+        preAuthRequest.Purchaser.shippingAddress.tcCertificate = "1234567890"
+        preAuthRequest.Purchaser.shippingAddress.country = "TR"
+        preAuthRequest.Purchaser.shippingAddress.phoneNumber = "2122222222"
+
+        # Ürün Bilgileri
+        preAuthRequest.Products = []
+        product1 = preAuthRequest.Product()
+        product1.title = "Telefon"
+        product1.code = "TLF0001"
+        product1.price = "5000"
+        product1.quantity = "1"
+        preAuthRequest.Products.append(product1)
+
+        product2 = preAuthRequest.Product()
+        product2.title = "Bilgisayar"
+        product2.code = "BLG0001"
+        product2.price = "5000"
+        product2.quantity = "1"
+        preAuthRequest.Products.append(product2)
+
+        # API Cagrisi Yapiyoruz
+        response = preAuthRequest.execute(preAuthRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'preAuth.html', {'message': message})
+
 
 # Non-3D Ödeme Yaptığımız Kısım
 
@@ -150,7 +234,23 @@ def nonThreeDPaymentRequest(request):
         message = Helper.formatXML(
             non3DPaymentRequest.execute(non3DPaymentRequest, config))
 
-    return render_to_response('nonThreeDPayment.html', {'message': message})
+    return render(None, 'nonThreeDPayment.html', {'message': message})
+
+
+def postAuthRequest(request):
+    message = ""
+    if request.POST:
+        postAuthRequest = PostAuthRequest()
+        postAuthRequest.Mode = config.Mode
+        postAuthRequest.OrderId = request.POST.get('orderId')
+        postAuthRequest.Amount = request.POST.get('amount')
+        postAuthRequest.ClientIp = "127.0.0.1"
+        # API Cagrisi Yapiyoruz
+        response = postAuthRequest.execute(postAuthRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'postAuth.html', {'message': message})
+
 
 # Ödeme Sorguladığımız Kısım
 
@@ -164,7 +264,8 @@ def paymentInquiryRequest(request):
         # ödeme sorgulama servisi api çağrısının yapıldığı kısımdır.
         message = Helper.formatXML(req.execute(req, config))
 
-    return render_to_response('paymentInquiry.html', {'message': message})
+    return render(None, 'paymentInquiry.html', {'message': message})
+
 
 # Ödemeleri Zamana Göre Sorguladığımız Kısım
 
@@ -186,7 +287,8 @@ def paymentInquiryWithTimeRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentInquiryWithTime.html', {'message': message})
+    return render(None, 'paymentInquiryWithTime.html', {'message': message})
+
 
 # Bin İsteği Yaptığımız Kısım
 
@@ -204,7 +306,27 @@ def binRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('bininqury.html', {'message': message})
+    return render(None, 'bininqury.html', {'message': message})
+
+
+# Bin İsteği Yaptığımız Kısım
+
+
+def binV4Request(request):
+    message = ""
+    if request.POST:
+        req = BinNumberV4Request()
+        req.binNumber = request.POST.get('binNumber')
+        req.amount = request.POST.get('amount')
+        req.threeD = request.POST.get('threeD')
+
+        # Bin istegi icin yapılan API cagrisini temsil etmektedir
+        response = req.execute(req, config)
+        message = json.dumps(json.loads(response),
+                             indent=4, ensure_ascii=False)
+
+    return render(None, 'bininquryv4.html', {'message': message})
+
 
 # Cüzdana Kart Eklediğimiz Kısım
 
@@ -226,7 +348,8 @@ def addCartToWallet(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('addCartToWallet.html', {'message': message})
+    return render(None, 'addCartToWallet.html', {'message': message})
+
 
 # Cüzdandaki Kartları Listelediğimiz Kısım
 
@@ -244,7 +367,8 @@ def getCardFromWallet(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('getCardFromWallet.html', {'message': message})
+    return render(None, 'getCardFromWallet.html', {'message': message})
+
 
 # Cüzdandan Kart Sildiğimiz Kısım
 
@@ -262,7 +386,8 @@ def deleteCardFromWallet(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('deleteCardFromWallet.html', {'message': message})
+    return render(None, 'deleteCardFromWallet.html', {'message': message})
+
 
 # Cüzdandaki Kartla Tek Tıkla Ödeme Yaptığımız Örnek
 
@@ -274,7 +399,7 @@ def nonThreeDPaymentWithWallet(request):
         req.OrderId = str(randint(1, 10000))
         req.Echo = "Echo"
         req.Mode = config.Mode
-        req.Amount = "10000"
+        req.Amount = "100"
         req.CardOwnerName = ""
         req.CardNumber = ""
         req.CardExpireMonth = ""
@@ -336,7 +461,8 @@ def nonThreeDPaymentWithWallet(request):
         # Cüzdandaki kart ile ödeme yapma API çağrısının yapıldığı kısımdır.
         message = Helper.formatXML(req.execute(req, config))
 
-    return render_to_response('nonThreeDPaymentWithWallet.html', {'message': message})
+    return render(None, 'nonThreeDPaymentWithWallet.html', {'message': message})
+
 
 # Ödeme Linki Oluşturduğumuz Kısım
 
@@ -366,7 +492,8 @@ def paymentLinkCreateRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentLinkCreate.html', {'message': message})
+    return render(None, 'paymentLinkCreate.html', {'message': message})
+
 
 # Ödeme Linki Sorguladığımız Kısım
 
@@ -399,7 +526,8 @@ def paymentLinkInquiryRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentLinkInquiry.html', {'message': message})
+    return render(None, 'paymentLinkInquiry.html', {'message': message})
+
 
 # Ödeme Linki Sildiğimiz Kısım
 
@@ -416,7 +544,8 @@ def paymentLinkDeleteRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentLinkDelete.html', {'message': message})
+    return render(None, 'paymentLinkDelete.html', {'message': message})
+
 
 # İade Sorgulaması Yaptığımız Kısım
 
@@ -434,7 +563,8 @@ def paymentRefundInquiryRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentRefundInquiry.html', {'message': message})
+    return render(None, 'paymentRefundInquiry.html', {'message': message})
+
 
 # İade Yaptığımız Kısım
 
@@ -453,4 +583,26 @@ def paymentRefundRequest(request):
         message = json.dumps(json.loads(response),
                              indent=4, ensure_ascii=False)
 
-    return render_to_response('paymentRefund.html', {'message': message})
+    return render(None, 'paymentRefund.html', {'message': message})
+
+
+def checkoutFormCreateRequest(request):
+    message = ""
+    if request.method == "POST":
+        checkoutFormCreateRequest = CheckoutFormCreateRequest()
+        checkoutFormCreateRequest.OrderId = str(randint(1, 10000))
+        checkoutFormCreateRequest.Amount = "100"
+        checkoutFormCreateRequest.ThreeD = "false"
+        checkoutFormCreateRequest.Mode = config.Mode
+        checkoutFormCreateRequest.Purchaser = checkoutFormCreateRequest.PurchaserClass()
+        checkoutFormCreateRequest.Purchaser.name = "Ahmet"
+        checkoutFormCreateRequest.Purchaser.surname = "Veli"
+        checkoutFormCreateRequest.Purchaser.email = "mura@Veli.com"
+        checkoutFormCreateRequest.Version = "1.0"
+        checkoutFormCreateRequest.Echo = "Echo"
+
+        # API Cagrisi Yapiyoruz
+        response = checkoutFormCreateRequest.execute(checkoutFormCreateRequest, config)
+        message = json.dumps(json.loads(response), indent=4, ensure_ascii=False)
+
+    return render(None, 'checkoutFormCreate.html', {'message': message})

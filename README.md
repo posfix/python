@@ -44,6 +44,13 @@ class Configs:
 
 PosFix örnek projelerinin amacı, yazılım geliştiricilere PosFix servislerine entegre olabilecek bir proje örneği sunmak ve entegrasyon adımlarının daha iyi anlaşılmasını sağlamaktır. Projeleri doğrudan canlı ortamınıza alarak kod değişimi yapmadan kullanmanız için desteğimiz bulunmamaktadır. **Projeyi bir eğitsel kaynak (tutorial) olarak kullanınız.**
 
+### Gerekli Teknolojiler 
+* Django 5.1b1
+* requests 2.32.3
+* pytz 2024.1
+* Python 3.12
+
+
 ## Test Kartları
 
 Başarılı bir ödemeyi test etmek için aşağıdaki kart numaralarını ve diğer bilgileri kullanabilirsiniz.
@@ -82,7 +89,7 @@ def nonThreeDPaymentRequest(request):
         non3DPaymentRequest.Mode = config.Mode
         non3DPaymentRequest.ThreeD = "false"
         non3DPaymentRequest.OrderId = str(randint(1, 10000))
-        non3DPaymentRequest.Amount = "10000"
+        non3DPaymentRequest.Amount = "100"
         non3DPaymentRequest.CardOwnerName = "Ahmet Veli"
         non3DPaymentRequest.CardNumber = "5456165456165454"
         non3DPaymentRequest.CardExpireMonth = "12"
